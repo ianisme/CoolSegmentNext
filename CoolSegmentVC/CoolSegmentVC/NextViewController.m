@@ -21,6 +21,8 @@ static NSString * const ReuseIdentifier = @"ReuseIdentifier";
 
 @property (nonatomic, assign) BOOL isInitial;
 
+@property (nonatomic, assign) BOOL isOneDisplay;
+
 @end
 
 @implementation NextViewController
@@ -56,15 +58,6 @@ static NSString * const ReuseIdentifier = @"ReuseIdentifier";
         _contentScrollView.contentSize = CGSizeMake(count * self.contentScrollView.bounds.size.width, 0);
         [_contentScrollView registerClass:[NextCollectionViewCell class] forCellWithReuseIdentifier:ReuseIdentifier];
     }
-}
-
-- (void)viewDidLayoutSubviews
-{
-    double delayInSeconds = 0.5;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [_contentScrollView reloadData];
-    });
 }
 
 
@@ -147,6 +140,10 @@ static NSString * const ReuseIdentifier = @"ReuseIdentifier";
 {
     NextCollectionViewCell *nextCell = (NextCollectionViewCell *)cell;
     [nextCell addViewControllerToParentViewController:self];
+    if (!_isOneDisplay) {
+        _isOneDisplay = YES;
+        [nextCell.contentViewController viewWillAppear:YES];
+    }
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
